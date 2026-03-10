@@ -291,6 +291,7 @@ async function addToWatchlist() {
 
     try {
         await apiFetch("/api/watchlist", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ symbol }),
         });
@@ -305,6 +306,7 @@ async function addToWatchlist() {
 async function removeFromWatchlist(symbol) {
     try {
         await apiFetch("/api/watchlist", {
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ symbol }),
         });
