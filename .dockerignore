@@ -1,0 +1,22 @@
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment secrets — set these via HF Secrets instead
+.env
+
+# Database — will be recreated fresh on the container
+market_insights.db
+
+# Git
+.git/
+.gitignore
+
+# Editor
+.vscode/
+*.DS_Store

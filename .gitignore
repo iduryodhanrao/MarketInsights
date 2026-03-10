@@ -1,0 +1,22 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment — never commit secrets
+.env
+
+# Database
+market_insights.db
+
+# Editor
+.vscode/
+.idea/
+*.DS_Store

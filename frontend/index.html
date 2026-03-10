@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Insights — AI-Powered Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ─── Login Overlay ───────────────────────────────────── -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-icon">◈</div>
+            <h2 class="login-title">Market Insights</h2>
+            <p class="login-sub">Sign in to access your dashboard</p>
+            <div class="login-form">
+                <input id="login-user" type="text" placeholder="Username" autocomplete="username" />
+                <input id="login-pass" type="password" placeholder="Password" autocomplete="current-password" />
+                <button id="login-btn" class="btn-primary" onclick="submitLogin()">Sign In</button>
+                <div id="login-error" class="login-error hidden">Invalid username or password.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+
+        <!-- ─── Header ──────────────────────────────────────── -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="brand">
+                    <div class="brand-icon">◈</div>
+                    <div>
+                        <h1 class="brand-title">Market Insights</h1>
+                        <span class="brand-sub">LangGraph · OpenAI · Real-Time</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span id="timestamp" class="timestamp"></span>
+                    <button id="refresh-btn" class="btn-primary" onclick="loadInsights()">
+                        <span class="btn-icon">↻</span> Refresh
+                    </button>
+                    <button class="btn-logout" onclick="logout()" title="Sign out">⏻</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ─── Main content ────────────────────────────────── -->
+        <main class="main">
+
+            <!-- Mobile tab bar for quick section jumping -->
+            <nav class="tab-bar" id="tab-bar">
+                <button class="tab active" data-target="section-stocks"       >Stocks</button>
+                <button class="tab"        data-target="section-indexes"      >Indexes</button>
+                <button class="tab"        data-target="section-commodities"  >Commod.</button>
+                <button class="tab"        data-target="section-etfs"         >ETFs</button>
+                <button class="tab"        data-target="section-watchlist"    >Watch</button>
+                <button class="tab"        data-target="section-recommendations">Recs</button>
+                <button class="tab"        data-target="section-analysis"    >AI</button>
+                <button class="tab"        data-target="section-news"        >News</button>
+                <button class="tab"        data-target="section-validation"  >Valid.</button>
+            </nav>
+
+            <!-- Loading overlay -->
+            <div id="loading" class="loading-overlay hidden">
+                <div class="loader-card">
+                    <div class="spinner"></div>
+                    <p class="loader-title">AI Agents analysing markets…</p>
+                    <div class="agent-pills">
+                        <span class="pill pill-green"  data-agent="1">Agent 1 · Stocks</span>
+                        <span class="pill pill-gold"   data-agent="2">Agent 2 · Commodities</span>
+                        <span class="pill pill-purple" data-agent="3">Agent 3 · ETFs</span>
+                        <span class="pill pill-blue"   data-agent="4">Agent 4 · News</span>
+                        <span class="pill pill-cyan"   data-agent="5">Agent 5 · Validator</span>
+                        <span class="pill pill-orange" data-agent="6">Agent 6 · Watchlist</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error banner -->
+            <div id="error-banner" class="error-banner hidden"></div>
+
+            <!-- Dashboard grid -->
+            <div class="dashboard" id="dashboard">
+
+                <!-- Row 1: Stocks + Indexes -->
+                <section class="card card-stocks" id="section-stocks">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">📈</span> Major Stocks</h2>
+                        <div class="card-head-right"><span class="badge badge-green">Live</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="stocks-grid" class="quotes-grid"></div>
+                    </div>
+                </section>
+
+                <section class="card card-indexes" id="section-indexes">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">🏛</span> Market Indexes</h2>
+                        <div class="card-head-right"><span class="badge badge-blue">Live</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="indexes-grid" class="quotes-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Row 2: Commodities + ETFs -->
+                <section class="card card-commodities" id="section-commodities">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">🪙</span> Commodities</h2>
+                        <div class="card-head-right"><span class="badge badge-gold">Live</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="commodities-grid" class="quotes-grid"></div>
+                    </div>
+                </section>
+
+                <section class="card card-etfs" id="section-etfs">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">📊</span> ETFs</h2>
+                        <div class="card-head-right"><span class="badge badge-purple">Live</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="etfs-grid" class="quotes-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Full-width: Watchlist -->
+                <section class="card card-watchlist full-width" id="section-watchlist">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">⭐</span> My Watchlist</h2>
+                        <div class="card-head-right"><span class="badge badge-orange">Personalised</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="watchlist-controls">
+                            <input type="text" id="watchlist-input" class="watchlist-input" placeholder="Ticker (e.g. AAPL)" maxlength="10">
+                            <button class="btn-add" onclick="addToWatchlist()">+ Add</button>
+                        </div>
+                        <div id="watchlist-symbols" class="watchlist-symbols"></div>
+                        <div id="watchlist-grid" class="quotes-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Full-width: Buy / Sell Recommendations -->
+                <section class="card card-recommendations full-width" id="section-recommendations">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">🎯</span> Buy / Sell Recommendations</h2>
+                        <div class="card-head-right"><span class="badge badge-cyan">AI-Grounded</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="recommendations-content" class="recommendations-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Full-width: AI Analysis -->
+                <section class="card card-analysis full-width" id="section-analysis">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">🤖</span> AI Market Analysis</h2>
+                        <div class="card-head-right"><span class="badge badge-cyan">GPT-4o</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysis-content" class="prose"></div>
+                    </div>
+                </section>
+
+                <!-- Full-width: News -->
+                <section class="card card-news full-width" id="section-news">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">📰</span> Market News &amp; Research</h2>
+                        <div class="card-head-right"><span class="badge badge-purple">Last 7 Days</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="news-summary" class="prose"></div>
+                        <div id="news-articles" class="articles-grid"></div>
+                    </div>
+                </section>
+
+                <!-- Full-width: Validation -->
+                <section class="card card-validation full-width" id="section-validation">
+                    <div class="card-head" data-collapsible>
+                        <h2><span class="icon">✅</span> Data Validation Report</h2>
+                        <div class="card-head-right"><span id="validation-badge" class="badge">Pending</span><span class="chevron">▾</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="validation-content" class="prose"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ─── Footer ──────────────────────────────────────── -->
+        <footer class="footer">
+            <p>Market Insights &copy; 2026 &mdash; Powered by <strong>LangGraph</strong> · <strong>OpenAI</strong> · <strong>RapidAPI</strong> &mdash; Traced via <strong>LangSmith</strong></p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
