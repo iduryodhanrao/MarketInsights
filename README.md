@@ -18,7 +18,7 @@ Five specialised AI agents run in parallel to fetch, analyse, and validate real-
 ## Architecture
 
 ```
-START ──┬── Agent 1 (Stocks & Indexes) ────┐
+START ──┬── Agent 1 (Stocks-gainers/losers)┐
         ├── Agent 2 (Commodities) ─────────┤
         ├── Agent 3 (ETFs) ────────────────┼──▶ Agent 5 (Validator) ──▶ END
         └── Agent 4 (News & Research) ─────┘
@@ -38,7 +38,7 @@ START ──┬── Agent 1 (Stocks & Indexes) ────┐
 
 | # | Name | Responsibility |
 |---|------|---------------|
-| 1 | **Stock Agent** | Fetches prices for AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA + S&P 500, Dow, Nasdaq |
+| 1 | **Stock Agent** | Fetches prices for top 20 gainers and loser stocks for the day  |
 | 2 | **Commodity Agent** | Fetches Gold, Silver, Crude Oil, Natural Gas, Copper prices |
 | 3 | **ETF Agent** | Fetches SPY, QQQ, VTI, IWM, EEM, GLD, TLT, XLF, ARKK prices |
 | 4 | **News Agent** | Searches 5 financial queries, pulls articles from the last week, generates research summary |

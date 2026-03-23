@@ -34,6 +34,8 @@
     --shadow:        0 4px 30px rgba(0, 0, 0, 0.4);
     --font-sans:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
+    --header-height: 86px;
+    --tab-bar-height: 58px;
 }
 
 /* ── Reset & Base ────────────────────────────────────────────── */
@@ -68,15 +70,18 @@ a:hover { text-decoration: underline; }
     width: 100%;
     max-width: 1360px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: calc(var(--header-height) + var(--tab-bar-height) + 1rem) 1.5rem 2rem;
     position: relative;
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
 .header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 200;
     background: var(--bg-header);
     backdrop-filter: blur(16px) saturate(1.4);
     border-bottom: 1px solid var(--border);
@@ -147,6 +152,7 @@ a:hover { text-decoration: underline; }
     backdrop-filter: blur(8px);
     transition: border-color 0.25s, transform 0.2s;
     animation: fadeUp 0.5s ease both;
+    scroll-margin-top: calc(var(--header-height) + var(--tab-bar-height) + 1rem);
 }
 .card:hover {
     border-color: var(--border-glow);
@@ -303,6 +309,7 @@ a:hover { text-decoration: underline; }
     color: var(--text-secondary);
     line-height: 1.55;
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -618,13 +625,24 @@ a:hover { text-decoration: underline; }
 
 /* ── Tab Bar (mobile section navigation) ─────────────────────── */
 .tab-bar {
-    display: none;            /* hidden on desktop */
+    display: flex;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: var(--header-height);
+    width: min(1360px, calc(100% - 2rem));
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     gap: 0.35rem;
-    padding: 0.5rem 0;
-    margin-bottom: 1rem;
+    padding: 0.55rem 0.75rem;
+    margin-bottom: 0;
     scrollbar-width: none;
+    z-index: 180;
+    background: rgba(6, 7, 14, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 .tab-bar::-webkit-scrollbar { display: none; }
 
@@ -677,9 +695,22 @@ a:hover { text-decoration: underline; }
     .dashboard { grid-template-columns: 1fr; gap: 1rem; }
     .header-inner { flex-direction: column; text-align: center; }
     .header-right { justify-content: center; }
-    .tab-bar { display: flex; }
+    :root { --tab-bar-height: 52px; }
+    .tab-bar {
+        left: 0;
+        right: 0;
+        width: 100%;
+        transform: none;
+        top: var(--header-height);
+        border: none;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
+        padding: 0.55rem 0.7rem;
+        box-shadow: none;
+    }
     .chevron { display: inline-block; }
-    .main { padding: 1rem; }
+    .main { padding: calc(var(--header-height) + var(--tab-bar-height) + 0.7rem) 1rem 1rem; }
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -688,8 +719,9 @@ a:hover { text-decoration: underline; }
    ═════════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
     html { font-size: 14px; }
+    :root { --tab-bar-height: 48px; }
 
-    .main { padding: 0.65rem; }
+    .main { padding: calc(var(--header-height) + var(--tab-bar-height) + 0.5rem) 0.65rem 0.65rem; }
 
     /* ── Compact header ──────────────────────────────────────── */
     .header-inner { padding: 0.6rem 0.75rem; gap: 0.5rem; }
@@ -699,14 +731,10 @@ a:hover { text-decoration: underline; }
     .timestamp    { font-size: 0.68rem; }
     .btn-primary  { padding: 0.45rem 1rem; font-size: 0.8rem; }
 
-    /* ── Tab bar — sticky under header ───────────────────────── */
+    /* ── Tab bar — fixed quick navigation ────────────────────── */
     .tab-bar {
-        position: sticky;
-        top: 0;
-        z-index: 90;
-        background: var(--bg-body);
-        padding: 0.4rem 0;
-        margin-bottom: 0.6rem;
+        top: var(--header-height);
+        padding: 0.45rem 0.55rem;
     }
     .tab { font-size: 0.68rem; padding: 0.35rem 0.65rem; }
 
@@ -743,7 +771,7 @@ a:hover { text-decoration: underline; }
     .articles-grid { grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.7rem; }
     .article-card { padding: 0.7rem; }
     .article-title { font-size: 0.8rem; }
-    .article-snippet { -webkit-line-clamp: 2; font-size: 0.72rem; }
+    .article-snippet { line-clamp: 2; -webkit-line-clamp: 2; font-size: 0.72rem; }
 
     /* ── Compact recommendation cards ────────────────────────── */
     .recommendations-grid { grid-template-columns: 1fr; gap: 0.5rem; }

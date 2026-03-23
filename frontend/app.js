@@ -79,8 +79,16 @@ const errorBanner  = $("#error-banner");
 const refreshBtn   = $("#refresh-btn");
 const timestampEl  = $("#timestamp");
 
+function updateStickyLayout() {
+    const header = document.querySelector(".header");
+    if (!header) return;
+    document.documentElement.style.setProperty("--header-height", `${header.offsetHeight}px`);
+}
+
 // ── Bootstrap: check auth then load cached data + watchlist ──────
 document.addEventListener("DOMContentLoaded", () => {
+    updateStickyLayout();
+
     // Enter key on login fields
     ["login-user", "login-pass"].forEach(id => {
         const el = document.getElementById(id);
@@ -95,6 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     // else: login overlay remains visible; data loads after successful sign-in
 });
+
+window.addEventListener("resize", updateStickyLayout);
+window.addEventListener("load", updateStickyLayout);
 
 
 /* ────────────────────────────────────────────────────────────────
