@@ -19,8 +19,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the project
 COPY . .
 
-# Hugging Face Spaces exposes port 7860 by default
+# Hugging Face Spaces expects 7860 by default.
+# Railway can still override PORT at runtime.
+ENV PORT=7860
 EXPOSE 7860
 
-# Start the FastAPI app on port 7860 (no --reload in production)
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Start via project entrypoint so env-based HOST/PORT are respected.
+CMD ["python", "run.py"]

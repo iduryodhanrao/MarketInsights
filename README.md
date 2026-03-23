@@ -78,6 +78,76 @@ python run.py
 
 Navigate to **http://localhost:8000** in your browser.
 
+Important:
+- `0.0.0.0` is a bind address for the server, not a browser destination.
+- If logs show `Uvicorn running on http://0.0.0.0:8000`, open `http://localhost:8000` (or `http://127.0.0.1:8000`).
+
+---
+
+## Deployment
+
+### Local Development
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Run:
+
+```bash
+python run.py
+```
+
+3. Open in browser:
+
+```text
+http://localhost:8000
+```
+
+Optional environment variables:
+- `HOST` (default `0.0.0.0`)
+- `PORT` (default `8000`)
+- `RELOAD` (`true` to enable auto-reload)
+
+### Hugging Face Spaces (Docker)
+
+This repository is already configured for Docker Spaces:
+- Docker startup uses `python run.py`.
+- Container default is `PORT=7860` for Spaces compatibility.
+
+Steps:
+1. Create a new Space and select Docker SDK.
+2. Connect this repository.
+3. Add required secrets in Space Settings:
+    - `OPENAI_API_KEY`
+    - `RAPIDAPI_KEY`
+    - `LANGCHAIN_API_KEY` (optional)
+    - `APP_USERNAME` and `APP_PASSWORD` (recommended)
+4. Deploy. Spaces will expose the app automatically on the Space URL.
+
+### Railway
+
+Railway works with this Docker setup because Railway injects a runtime `PORT`, and `run.py` reads it.
+
+Steps:
+1. Create a new Railway project from this GitHub repository.
+2. Ensure the service is a Web Service.
+3. Do not hardcode a port in Railway start command. Use Docker default command from the `Dockerfile`.
+4. Set environment variables in Railway:
+    - `OPENAI_API_KEY`
+    - `RAPIDAPI_KEY`
+    - `LANGCHAIN_API_KEY` (optional)
+    - `APP_USERNAME` and `APP_PASSWORD`
+5. Deploy and open the generated Railway domain.
+
+If Railway shows "unexposed service":
+- Confirm deployment logs include uvicorn startup.
+- Confirm the app is listening on `0.0.0.0` and Railway-provided `PORT` (handled by current `run.py`).
+- Confirm service type is Web Service.
+- Redeploy after environment variable changes.
+
 ---
 
 ## API Endpoints
